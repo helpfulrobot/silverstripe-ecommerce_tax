@@ -687,28 +687,32 @@ class GSTTaxModifier extends OrderModifier {
 				return 0;
 			}
 			else {
-			$currentCountry = $this->LiveCountry();
-			$defaultCountry = $this->LiveDefaultCountry();
-			if($currentCountry != $defaultCountry) {
+				$currentCountry = $this->LiveCountry();
+				$defaultCountry = $this->LiveDefaultCountry();
+				if($currentCountry != $defaultCountry) {
 
-				//already calculated into prices:
-				$defaultRate = $this->LiveDefaultRate();
-				$defaultItemsTax = $this->workoutOrderItemsTax($defaultRate, $defaultCountry);
-				$defaultModifiersTax = $this->workoutModifiersTax($defaultRate, $defaultCountry);
-				$shownToPay = $defaultItemsTax + $defaultModifiersTax;
+					//already calculated into prices:
+					$defaultRate = $this->LiveDefaultRate();
+					$defaultItemsTax = $this->workoutOrderItemsTax($defaultRate, $defaultCountry);
+					$defaultModifiersTax = $this->workoutModifiersTax($defaultRate, $defaultCountry);
+					$shownToPay = $defaultItemsTax + $defaultModifiersTax;
 
-				//what should have actually been show in prices:
-				$actualNeedToPay = $this->LiveRawTableValue();
+					//what should have actually been show in prices:
+					$actualNeedToPay = $this->LiveRawTableValue();
 
-				//show what actually needs to be paid, minus what is already showing.
-				return $actualNeedToPay - $shownToPay;
-			}
-			else {
-				return 0;
+					//use what actually needs to be paid in tax minus what is already showing in prices
+					//for example, if the shop is tax inclusive
+					//and it is based in NZ (tax = 0.15) and a sale is made to AU (tax = 0.1)
+					//and the shop also charges tax in AU then the Calculated TOTAL
+					//is: AUTAX - NZTAX
+					return $actualNeedToPay - $shownToPay;
+				}
+				else {
+					return 0;
+				}
 			}
 		}
 	}
-
 
 	protected static $field_or_method_to_use_for_title = "Code";
 
