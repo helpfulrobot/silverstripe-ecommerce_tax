@@ -273,7 +273,9 @@ class GSTTaxModifier extends OrderModifier {
 				$this->debugMessage .= "<hr />There is no current live DEFAULT country";
 			}
 		}
-		self::$default_tax_objects_rate = $this->workOutSumRate(self::$default_tax_objects);
+		if(!self::$default_tax_objects_rate) {
+			self::$default_tax_objects_rate = $this->workOutSumRate(self::$default_tax_objects);
+		}
 		return self::$default_tax_objects;
 	}
 
@@ -301,7 +303,9 @@ class GSTTaxModifier extends OrderModifier {
 				$this->debugMessage .= "<hr />there is no current live country code";
 			}
 		}
-		self::$current_tax_objects_rate = $this->workOutSumRate(self::$current_tax_objects);
+		if(!self::$current_tax_objects_rate) {
+			self::$current_tax_objects_rate = $this->workOutSumRate(self::$current_tax_objects);
+		}
 		return self::$current_tax_objects;
 	}
 
@@ -432,12 +436,12 @@ class GSTTaxModifier extends OrderModifier {
 					//turnRateIntoCalculationRate is really important -
 					//a 10% rate is different for inclusive than for an exclusive tax
 					$actualCalculationRate = $this->turnRateIntoCalculationRate($actualRate);
-					$this->debugMessage .= "<hr />'--$actualRate' turned into '--".round($actualCalculationRate, 2)."' for '--$totalForItem' on ".$item->ClassName.".".$item->ID;
+					$this->debugMessage .= "<hr />$actualRate % turned into ".round($actualCalculationRate, 4)." % for \$ $totalForItem on ".$item->ClassName.".".$item->ID;
 					$itemsTotal += floatval($totalForItem) * $actualCalculationRate;
 				}
 			}
 		}
-		$this->debugMessage .= "<hr />Total order items tax: ".round($itemsTotal, 2);
+		$this->debugMessage .= "<hr />Total order items tax: \$ ".round($itemsTotal, 4);
 		return $itemsTotal;
 	}
 
@@ -512,14 +516,14 @@ class GSTTaxModifier extends OrderModifier {
 							//turnRateIntoCalculationRate is really important -
 							//a 10% rate is different for inclusive than for an exclusive tax
 							$actualRateCalculationRate = $this->turnRateIntoCalculationRate($actualRate);
-							$this->debugMessage .= "<hr />--'$actualRate' turned into --'".$actualRateCalculationRate."' for '--$totalForModifier' on ".$modifier->ClassName.".".$modifier->ID;
+							$this->debugMessage .= "<hr />$actualRate % turned into ".round($actualRateCalculationRate, 4)." % for \$ $totalForModifier on ".$modifier->ClassName.".".$modifier->ID;
 							$modifiersTotal += floatval($totalForModifier) * $actualRateCalculationRate;
 						}
 					}
 				}
 			}
 		}
-		$this->debugMessage .= "<hr />Total order modifiers tax: ".round($modifiersTotal);
+		$this->debugMessage .= "<hr />Total order modifiers tax: \$ ".round($modifiersTotal, 4);
 		return $modifiersTotal;
 	}
 
