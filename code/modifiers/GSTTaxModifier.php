@@ -321,6 +321,7 @@ class GSTTaxModifier extends OrderModifier {
 		else {
 			$this->debugMessage .= "<hr />could not find a rate";
 		}
+		$this->debugMessage .= "<hr />sum rate for tax objects: ".$sumRate;
 		return $sumRate;
 	}
 
@@ -431,12 +432,12 @@ class GSTTaxModifier extends OrderModifier {
 					//turnRateIntoCalculationRate is really important -
 					//a 10% rate is different for inclusive than for an exclusive tax
 					$actualCalculationRate = $this->turnRateIntoCalculationRate($actualRate);
-					$this->debugMessage .= "<hr />'--$actualRate' turned into '--".$actualCalculationRate."' for '--$totalForItem' on ".$item->ClassName.".".$item->ID;
+					$this->debugMessage .= "<hr />'--$actualRate' turned into '--".round($actualCalculationRate, 2)."' for '--$totalForItem' on ".$item->ClassName.".".$item->ID;
 					$itemsTotal += floatval($totalForItem) * $actualCalculationRate;
 				}
 			}
 		}
-		$this->debugMessage .= "<hr />Total order items tax: $itemsTotal";
+		$this->debugMessage .= "<hr />Total order items tax: ".round($itemsTotal, 2);
 		return $itemsTotal;
 	}
 
@@ -518,7 +519,7 @@ class GSTTaxModifier extends OrderModifier {
 				}
 			}
 		}
-		$this->debugMessage .= "<hr />Total order modifiers tax: $modifiersTotal";
+		$this->debugMessage .= "<hr />Total order modifiers tax: ".round($modifiersTotal);
 		return $modifiersTotal;
 	}
 
